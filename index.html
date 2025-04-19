@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPO Return Calculator | ipolist.in</title>
+    <meta name="description" content="Calculate potential returns on your IPO investments with our free IPO Return Calculator. Estimate profits and make informed investment decisions.">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        
+        .calculator-container {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .input-section, .result-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 30px;
+        }
+        
+        
+        .result-display {
+            
+            width: inherit;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        .result-item {
+            margin-bottom: 15px;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        
+        .result-value {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: bold;
+        }        
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-wrapper">
+            <a href="/" class="logo">ipolist.in</a>
+            <nav>
+                
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            <h1>IPO Return Calculator</h1>
+            <p>Estimate potential returns on your IPO investments with our free calculator. Input your details below to see projected profits.</p>
+            
+            <div class="calculator-container">
+                <div class="calculator-grid">
+                    <div class="input-section">
+                        <div class="form-group">
+                            <label for="shares">Number of Shares</label>
+                            <input type="number" id="shares" value="10" min="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ipo-price">IPO Issue Price (₹)</label>
+                            <input type="number" id="ipo-price" value="0" step="0.01" min="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="market-price">Current Market Price (₹)</label>
+                            <input type="number" id="market-price" value="0" step="0.01" min="0">
+                        </div>
+                        
+                        <button class="btn" id="calculate-btn">Calculate Returns</button>
+                    </div>
+                    
+                    <div class="result-section">
+                        <div class="chart-container">
+                            <canvas id="returns-chart"></canvas>
+                        </div>
+                        
+                        <div class="result-display">
+                            <div class="result-item">
+                                <span class="result-label">Invested Amount:</span>
+                                <span class="result-value" id="invested-amount">₹ 0.00</span>
+                            </div>
+                            
+                            <div class="result-item">
+                                <span class="result-label">Current Value:</span>
+                                <span class="result-value" id="current-value">₹ 0.00</span>
+                            </div>
+                            
+                            <div class="result-item">
+                                <span class="result-label">Profit/Loss:</span>
+                                <span class="result-value" id="profit-loss">₹ 0.00</span>
+                            </div>
+                            
+                            <div class="result-item">
+                                <span class="result-label">Return Percentage:</span>
+                                <span class="result-value" id="return-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h2>How to Use the IPO Return Calculator</h2>
+                <ol>
+                    <li>Enter the number of shares you purchased in the IPO</li>
+                    <li>Input the IPO issue price per share</li>
+                    <li>Enter the current market price of the stock</li>
+                    <li>Click "Calculate Returns" to see your potential profit/loss</li>
+                </ol>
+                
+                <h2 style="margin-top: 20px;">About IPO Investments</h2>
+                <p>Initial Public Offerings (IPOs) represent the first time a company's stock is available to the public. Investing in IPOs can offer significant returns if the company performs well, but also carries risks as new stocks can be volatile.</p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate-btn');
+            const sharesInput = document.getElementById('shares');
+            const ipoPriceInput = document.getElementById('ipo-price');
+            const marketPriceInput = document.getElementById('market-price');
+            
+            const investedAmountEl = document.getElementById('invested-amount');
+            const currentValueEl = document.getElementById('current-value');
+            const profitLossEl = document.getElementById('profit-loss');
+            const returnPercentageEl = document.getElementById('return-percentage');
+            
+            let chart;
+            
+            calculateBtn.addEventListener('click', calculateReturns);
+            
+            // Also calculate when inputs change
+            [sharesInput, ipoPriceInput, marketPriceInput].forEach(input => {
+                input.addEventListener('input', calculateReturns);
+            });
+            
+            function calculateReturns() {
+                const shares = parseFloat(sharesInput.value) || 0;
+                const ipoPrice = parseFloat(ipoPriceInput.value) || 0;
+                const marketPrice = parseFloat(marketPriceInput.value) || 0;
+                
+                const investedAmount = shares * ipoPrice;
+                const currentValue = shares * marketPrice;
+                const profitLoss = currentValue - investedAmount;
+                const returnPercentage = investedAmount > 0 ? ((profitLoss / investedAmount) * 100) : 0;
+                
+                // Update display
+                investedAmountEl.textContent = '₹ ' + investedAmount.toFixed(2);
+                currentValueEl.textContent = '₹ ' + currentValue.toFixed(2);
+                profitLossEl.textContent = '₹ ' + profitLoss.toFixed(2);
+                returnPercentageEl.textContent = returnPercentage.toFixed(2) + '%';
+                
+                // Update chart
+                updateChart(investedAmount, currentValue);
+            }
+            
+            function updateChart(invested, current) {
+                const ctx = document.getElementById('returns-chart').getContext('2d');
+                
+                if (chart) {
+                    chart.destroy();
+                }
+                
+                chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Invested Amount', 'Current Value'],
+                        datasets: [{
+                            data: [invested, current],
+                            backgroundColor: [
+                                '#3498db',
+                                '#2ecc71'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    const label = data.labels[tooltipItem.index];
+                                    const value = data.datasets[0].data[tooltipItem.index];
+                                    return label + ': ₹' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Initial calculation
+            calculateReturns();
+        });
+    </script>
+</body>
+</html>
